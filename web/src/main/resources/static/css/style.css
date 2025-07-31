@@ -1,0 +1,17 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+main {
+    flex: 1 0 auto; /* grow and shrink as needed */
+    overflow: auto; /* enable scrolling inside content if needed */
+    padding: 1rem;
+}
+header, footer {
+    flex-shrink: 0; /* don’t shrink header/footer */
+}

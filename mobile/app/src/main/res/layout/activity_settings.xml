@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <EditText
+            android:id="@+id/editApiUrl"
+            android:hint="API Base URL (https://www.example.com/api)"
+            android:inputType="textUri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <EditText
+            android:id="@+id/editApiKey"
+            android:hint="API Key"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:weightSum="1">
+
+        <TextView
+                android:id="@+id/label_sms_service"
+                android:layout_width="0dp"
+                android:layout_weight="0.99"
+                android:layout_height="wrap_content"
+                android:text="SMS Sending (disabled for testing)"
+                android:textSize="16dp" />
+
+        <Switch
+                android:id="@+id/toggle_sms_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"/>
+    </LinearLayout>
+
+    <EditText
+            android:id="@+id/editSmsText"
+            android:hint="SMS Text with {TAG} and {DATE} placeholders"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top|start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+    <Button
+            android:id="@+id/btnSaveSettings"
+            android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="16dp"
+            android:backgroundTint="#4CAF50"/>
+
+    <Button
+            android:id="@+id/button_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="8dp"
+            android:textSize="16dp"
+            android:backgroundTint="#eb4034"/>
+</LinearLayout>

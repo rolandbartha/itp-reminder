@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<main>
+    <div class="container">
+        <h2>User Profile</h2>
+
+        <div class="row">
+            <div class="col-12 col-md-6 mt-4">
+                <div class="card shadow h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Account Details</h5>
+                        <p><strong>Username:</strong> <span th:text="${user.username}">john</span></p>
+                        <p><strong>Email:</strong> <span th:text="${user.email}">john@example.com</span></p>
+                        <p><strong>Roles:</strong>
+                            <span th:each="role : ${user.roles}" class="badge bg-primary me-1"
+                                  th:text="${role}">ADMIN</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 mt-4">
+                <div class="card shadow h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Two-Factor Authentication (2FA)</h5>
+
+                        <div th:if="${is2FA}">
+                            <p>2FA is currently <span class="badge bg-success">Enabled</span>.</p>
+                            <p>Disabling it will require scanning a new QR code if you re-enable it later.</p>
+                            <form th:action="@{/2fa/disable}" method="post" class="row g-3"
+                                  onsubmit="return confirm('Disable 2FA?');">
+                                <label for="code" class="form-label">Enter the 6-digit code</label>
+                                <div class="col-md-4">
+                                    <input autocomplete="off" type="text" name="code" id="code"
+                                           class="form-control" placeholder="123456" required>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-danger" type="submit">Disable 2FA</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div th:if="${!is2FA}">
+                            <p>2FA is currently <span class="badge bg-danger">Disabled</span>.</p>
+                            <p>Enabling it will generate a new QR code for your authenticator app.</p>
+
+                            <p>Scan this QR code with your Authenticator app:</p>
+                            <div class="mb-3">
+                                <img th:src="${qrCodeBase64}" alt="QR Code"/>
+                            </div>
+
+                            <form th:action="@{/2fa/enable}" method="post" class="row g-3">
+
+                                <label for="code" class="form-label">Enter the 6-digit code</label>
+
+                                <div class="col-md-4">
+                                    <input autocomplete="off" type="text" name="code" id="code"
+                                           class="form-control" placeholder="123456"
+                                           required autofocus>
+                                </div>
+
+                                <div class="col-12">
+                                    <button class="btn btn-success" type="submit">Enable 2FA</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mt-4 w-100" th:if="${is2FA}">
+                    <div class="card-body">
+                        <h5 class="card-title">Your devices</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Browser</th>
+                                    <th>Operating System</th>
+                                    <th>Device Type</th>
+                                    <th>IP Address</th>
+                                    <th>Trusted At</th>
+                                    <th>Expires At</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="device : ${devices}">
+                                    <td th:text="${device.id}"></td>
+                                    <td th:text="${device.browser}">Browser</td>
+                                    <td th:text="${device.operatingSystem}">OS</td>
+                                    <td>
+                                        <span th:text="${device.deviceType}"></span>
+                                        <span class="badge bg-success ms-2 d-inline-block px-2 py-1 rounded-pill"
+                                              th:if="${device.id == currentDevice}">
+                                This Device</span>
+                                    </td>
+                                    <td th:text="${device.address}">IP</td>
+                                    <td th:text="${#temporals.format(device.createdAt, 'MMMM d, yyyy HH:mm')}"></td>
+                                    <td th:text="${#temporals.format(device.expiresAt, 'MMMM d, yyyy HH:mm')}"></td>
+                                    <td>
+                                        <form th:action="@{'/profile/remove-device/' + ${device.id}}" method="post">
+                                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>
