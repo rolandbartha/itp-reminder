@@ -85,7 +85,7 @@ public class DataEntryController {
         dataEntry.setPhone(entry.getPhone());
         dataEntry.setTag(entry.getTag());
         dataEntry.setDate(entry.getDate());
-        dataEntry.setDuration(Math.min(24, Math.max(entry.getDuration(), 1)));
+        dataEntry.setDuration(Math.min(36, Math.max(entry.getDuration(), 1)));
         dataEntry.setCreatedBy(user);
         dataEntryService.saveEntry(dataEntry);
         return "redirect:/entries";
@@ -136,7 +136,7 @@ public class DataEntryController {
         if (entry.getDate() != null) {
             dataEntry.setDate(entry.getDate());
         }
-        dataEntry.setDuration(Math.min(24, Math.max(entry.getDuration(), 1)));
+        dataEntry.setDuration(Math.min(36, Math.max(entry.getDuration(), 1)));
         dataEntry.setReminded(entry.isReminded());
         dataEntryService.saveEntry(dataEntry);
         return "redirect:/entries";
