@@ -1,6 +1,9 @@
-package net.rolibrt.itp_reminder.controllers;
+package net.rolibrt.itp_reminder.controllers.data;
 
+import com.alibaba.excel.EasyExcel;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import net.rolibrt.itp_reminder.dtos.DataEntryCSV;
 import net.rolibrt.itp_reminder.dtos.DataEntryDto;
 import net.rolibrt.itp_reminder.dtos.DataEntryListDto;
 import net.rolibrt.itp_reminder.dtos.DataEntrySearchDto;
@@ -15,20 +18,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/entries")
-public class DataEntryController {
-    private static final Logger logger = LoggerFactory.getLogger(DataEntryController.class);
+public class EntriesController {
+    private static final Logger logger = LoggerFactory.getLogger(EntriesController.class);
 
     private final DataEntryService dataEntryService;
     private final WebUserService webUserService;
 
     @Autowired
-    public DataEntryController(DataEntryService dataEntryService, WebUserService webUserService) {
+    public EntriesController(DataEntryService dataEntryService, WebUserService webUserService) {
         this.dataEntryService = dataEntryService;
         this.webUserService = webUserService;
     }
@@ -85,9 +94,9 @@ public class DataEntryController {
         dataEntry.setPhone(entry.getPhone());
         dataEntry.setTag(entry.getTag());
         dataEntry.setDate(entry.getDate());
-        dataEntry.setDuration(Math.min(36, Math.max(entry.getDuration(), 1)));
+        dataEntry.setDuration(Math.min(24, Math.max(entry.getDuration(), 1)));
         dataEntry.setCreatedBy(user);
-        dataEntryService.saveEntry(dataEntry);
+        dataEntryService.save(dataEntry);
         return "redirect:/entries";
     }
 
@@ -136,15 +145,63 @@ public class DataEntryController {
         if (entry.getDate() != null) {
             dataEntry.setDate(entry.getDate());
         }
-        dataEntry.setDuration(Math.min(36, Math.max(entry.getDuration(), 1)));
+        dataEntry.setDuration(Math.min(24, Math.max(entry.getDuration(), 1)));
         dataEntry.setReminded(entry.isReminded());
-        dataEntryService.saveEntry(dataEntry);
+        dataEntryService.save(dataEntry);
         return "redirect:/entries";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteEntry(@PathVariable Long id) {
-        dataEntryService.deleteEntry(id);
+        dataEntryService.delete(id);
+        return "redirect:/entries";
+    }
+
+    @PostMapping("/export")
+    public void exportEntries(@RequestParam List<Long> ids, HttpServletResponse response) throws Exception {
+        List<DataEntryCSV> dataEntries = dataEntryService.findAllById(ids).stream().map(DataEntryCSV::new).toList();
+        if (dataEntries.isEmpty()) return;
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"exported-selected-entries.xlsx\"");
+        EasyExcel.write(response.getOutputStream(), DataEntryCSV.class)
+                .sheet("Entries")
+                .doWrite(dataEntries);
+    }
+
+    @PostMapping("/export-all")
+    public void exportAllEntries(HttpServletResponse response) throws Exception {
+        List<DataEntryCSV> dataEntries = dataEntryService.findAll().stream().map(DataEntryCSV::new).toList();
+        if (dataEntries.isEmpty()) return;
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"exported-all-entries.xlsx\"");
+        EasyExcel.write(response.getOutputStream(), DataEntryCSV.class)
+                .sheet("Entries")
+                .doWrite(dataEntries);
+    }
+
+    @PostMapping("/import")
+    public String importEntries(@RequestParam("file") MultipartFile file) throws Exception {
+        if (file.isEmpty()) {
+            throw new RuntimeException("Uploaded file is empty");
+        }
+        List<DataEntryCSV> entries = EasyExcel.read(file.getInputStream())
+                .head(DataEntryCSV.class)
+                .sheet()
+                .doReadSync();
+        Map<Long, DataEntryCSV> map = entries.stream().collect(Collectors.toMap(DataEntryCSV::getId, e -> e));
+
+        List<DataEntry> entriesToUpdate = dataEntryService
+                .findAllById(entries.stream().map(DataEntryCSV::getId)
+                .toList());
+        for (DataEntry entry : entriesToUpdate) {
+            DataEntryCSV mapEntry = map.get(entry.getId());
+            if (entry.importCSV(mapEntry)) {
+                webUserService.findByUsername(mapEntry.getCreator()).ifPresent(entry::setCreatedBy);
+            }
+        }
+        dataEntryService.saveAll(entriesToUpdate);
         return "redirect:/entries";
     }
 }

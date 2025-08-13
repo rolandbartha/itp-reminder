@@ -35,6 +35,4 @@
         </activity>
         <activity android:name="net.rolibrt.itp_notifier.SettingsActivity" />
     </application>
-
-
 </manifest>

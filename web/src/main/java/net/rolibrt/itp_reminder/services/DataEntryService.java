@@ -61,6 +61,14 @@ public class DataEntryService {
         return dataEntryRepository.updateRemindedByIds(newValue, ids);
     }
 
+    public List<DataEntry> findAll() {
+        return dataEntryRepository.findAll();
+    }
+
+    public List<DataEntry> findAllById(List<Long> ids) {
+        return dataEntryRepository.findAllById(ids);
+    }
+
     public List<DataEntry> getEntriesByUser(WebUser user) {
         return dataEntryRepository.findByCreatedBy(user);
     }
@@ -77,11 +85,14 @@ public class DataEntryService {
         return dataEntryRepository.findById(id);
     }
 
-    public DataEntry saveEntry(DataEntry entry) {
-        return dataEntryRepository.save(entry);
+    public void save(DataEntry entry) {
+        dataEntryRepository.save(entry);
+    }
+    public void saveAll(List<DataEntry> entry) {
+        dataEntryRepository.saveAll(entry);
     }
 
-    public void deleteEntry(Long id) {
+    public void delete(Long id) {
         dataEntryRepository.deleteById(id);
     }
 }

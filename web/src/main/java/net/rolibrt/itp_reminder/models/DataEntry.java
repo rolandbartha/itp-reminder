@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.rolibrt.itp_reminder.dtos.DataEntryCSV;
 
 import java.time.LocalDate;
 
@@ -50,5 +51,17 @@ public class DataEntry {
         return !isExpired() && this.date.isBefore(LocalDate.now()
                 .minusMonths(duration)
                 .plusDays(days));
+    }
+
+    public boolean importCSV(DataEntryCSV csv) {
+        id = csv.getId();
+        phone = csv.getPhone();
+        tag = csv.getTag();
+        date = csv.getDate();
+        duration = csv.getDuration();
+        reminded = csv.isReminded();
+        boolean noCreator = createdBy == null;
+        boolean isNewBlank = csv.getCreator() == null || csv.getCreator().isBlank();
+        return noCreator != isNewBlank || !noCreator && !createdBy.getUsername().equals(csv.getCreator());
     }
 }
