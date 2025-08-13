@@ -23,7 +23,7 @@ public class DataEntryListDto {
 
     public DataEntryListDto(DataEntry entry, int reminderDays) {
         this(entry.getId(), entry.getPhone(), entry.getTag(), entry.getDate(), entry.getExpiry(),
-                entry.getCreatedBy().getUsername(), entry.isReminded(), entry.isExpired(),
-                entry.isSoon(reminderDays));
+                entry.getCreatedBy() == null ? "" : entry.getCreatedBy().getUsername(),
+                entry.isReminded(), entry.isExpired(), entry.isSoon(reminderDays));
     }
 }

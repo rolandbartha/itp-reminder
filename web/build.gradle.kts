@@ -34,7 +34,9 @@ configurations.all {
 dependencies {
     implementation("com.github.ua-parser:uap-java:1.5.4")
     implementation("com.google.guava:guava:32.1.2-jre")
-
+    // https://mvnrepository.com/artifact/com.alibaba/easyexcel
+    implementation("com.alibaba:easyexcel:4.0.3")
+    implementation("org.apache.commons:commons-csv:1.11.0")
     implementation("com.warrenstrange:googleauth:1.5.0")
     implementation("commons-codec:commons-codec:1.16.1")
     implementation("com.google.zxing:core:3.5.1")

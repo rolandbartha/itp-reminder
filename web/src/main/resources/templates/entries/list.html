@@ -15,16 +15,39 @@
 
 <main>
     <div class="container">
-        <div class="mb-4">
-            <h2 class="h4">Data Entries</h2>
-            <p class="text-muted">Displays all entries below.</p>
-            <a th:href="@{/entries/add}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add New Entry
-            </a>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-3">
+            <!-- Left: Text -->
+            <div class="mb-2 mb-md-0">
+                <h2 class="h4">Data Entries</h2>
+                <p class="text-muted">Manage all entries.</p>
+                <a th:href="@{/entries/add}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add New Entry
+                </a>
+            </div>
+
+            <!-- Right: Buttons -->
+            <div class="d-flex flex-column align-items-end gap-2">
+                <!-- Import button -->
+                <form th:action="@{/entries/import}" method="post" enctype="multipart/form-data"
+                      class="form-control form-control-sm flex-fill">
+                    <input type="file" name="file" accept=".xlsx" class="form-control" required>
+                    <button type="submit" class="btn btn-success w-100">Import</button>
+                </form>
+
+                <!-- Export button group -->
+                <div class="d-flex gap-1 w-100">
+                    <form id="export" th:action="@{/entries/export}" method="post" class="flex-fill">
+                        <button type="submit" class="btn btn-primary w-100">Export Selected</button>
+                    </form>
+                    <form th:action="@{/entries/export-all}" method="post" class="flex-fill">
+                        <button type="submit" class="btn btn-primary w-100">Export All</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <form th:action="@{/entries/search}" method="get" id="searchForm" class="mb-4">
-            <input type="hidden" name="page" value="0" />
+            <input type="hidden" name="page" value="0"/>
             <!-- Search Filters -->
             <div class="row g-3">
                 <h3 class="h5">Filters</h3>
@@ -68,12 +91,12 @@
             </div>
 
             <!-- Hidden inputs for pagination & sorting -->
-            <input type="hidden" name="page" id="pageInput" th:value="${search.page}" />
-            <input type="hidden" name="sortBy" id="sortByInput" th:value="${search.sortBy}" />
-            <input type="hidden" name="direction" id="directionInput" th:value="${search.direction}" />
+            <input type="hidden" name="page" id="pageInput" th:value="${search.page}"/>
+            <input type="hidden" name="sortBy" id="sortByInput" th:value="${search.sortBy}"/>
+            <input type="hidden" name="direction" id="directionInput" th:value="${search.direction}"/>
 
             <!-- Table -->
-            <table class="table table-striped table-hover table-bordered align-middle mt-4">
+            <table id="entry-table" class="table table-striped table-hover table-bordered align-middle mt-4">
                 <thead class="table-dark">
                 <tr>
                     <th scope="col">
@@ -167,7 +190,10 @@
                 </thead>
                 <tbody>
                 <tr th:each="entry : ${page?.content}">
-                    <th th:text="${entry.id}" scope="row"></th>
+                    <th scope="row">
+                        <input form="export" type="checkbox" name="ids" th:value="${entry.id}" class="form-check-input">
+                        <span th:text="${entry.id}"></span>
+                    </th>
                     <td th:text="${entry.phone}"></td>
                     <td th:text="${entry.tag}"></td>
                     <td><span th:text="${#temporals.format(entry.date, 'MMMM d, yyyy')}"></span></td>
