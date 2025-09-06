@@ -64,6 +64,10 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+tasks.bootJar {
+    archiveFileName.set("itpreminder.jar")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
