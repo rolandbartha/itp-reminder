@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
 
     steps:
       - name: Checkout code
@@ -20,16 +23,16 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission to Gradle wrapper
-        run: chmod +x web/gradlew
+        run: chmod +x gradlew
 
       - name: Build jar
-        run: ./web/gradlew build
+        run: ./gradlew build
 
       - name: Run tests (safety check)
-        run: ./web/gradlew test
+        run: ./gradlew test
         
       - name: List build output
-        run: ls -lh web/build/libs
+        run: ls -lh build/libs
 
       - name: Upload JAR to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -37,7 +40,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "web/build/libs/itpreminder.jar"
+          source: "build/libs/itpreminder.jar"
           target: "/home/${{ secrets.VPS_USER }}/deploy/"
           overwrite: true
 
