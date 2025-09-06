@@ -1,4 +1,4 @@
-name: Production CD
+name: Manual Production Deploy
 
 on:
   workflow_dispatch:
@@ -26,8 +26,33 @@ jobs:
       - name: Grant execute permission to Gradle wrapper
         run: chmod +x gradlew
 
-      - name: Build the project
-        run: ./gradlew build
+      - name: Build bootJar
+        run: ./gradlew bootJar
 
-      - name: Run tests
+      - name: Run tests (safety check)
         run: ./gradlew test
+
+      - name: Upload JAR to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "/home/${{ secrets.VPS_USER }}/deploy/"
+          overwrite: true
+
+      - name: Deploy & restart service
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            JAR_NAME=itpreminder.jar
+            echo "Deploying new jar..."
+            mv /home/${{ secrets.VPS_USER }}/deploy/*.jar /home/${{ secrets.VPS_USER }}/web/$JAR_NAME
+            echo "Restarting service..."
+            systemctl restart itpreminder.service
+            echo "Deployment finished!"
