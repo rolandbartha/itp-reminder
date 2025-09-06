@@ -28,38 +28,28 @@ jobs:
       - name: Run tests
         run: ./web/gradlew -p web test
 
-      - name: List build output
-        run: ls -lh web/build/libs
+      - name: Show jar
+        run: ls -lh web/build/libs/
 
-      - name: Setup SSH key
+      - name: Setup SSH key and trust VPS
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
-      - name: Upload JAR to VPS
-        run: |
-          scp -i ~/.ssh/id_rsa web/build/libs/itpreminder.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/deploy/
+      - name: Upload JAR
+        run: scp -i ~/.ssh/id_rsa web/build/libs/itpreminder.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/web/
 
-      - name: Deploy & restart service
+      - name: Restart service
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
-          JAR_NAME=itpreminder.jar
-          DEPLOY_DIR=/home/${USER}/deploy
           WEB_DIR=/home/${USER}/web
-          BACKUP_DIR=/home/${USER}/backup
-
-          echo "Creating backup folder if missing..."
-          mkdir -p $BACKUP_DIR
-
-          if [ -f $WEB_DIR/$JAR_NAME ]; then
-            echo "Backing up existing jar..."
-            mv $WEB_DIR/$JAR_NAME $BACKUP_DIR/${JAR_NAME}_$(date +%Y%m%d%H%M%S)
-          fi
+          JAR_NAME=itpreminder.jar
 
           echo "Deploying new jar..."
-          mv $DEPLOY_DIR/$JAR_NAME $WEB_DIR/$JAR_NAME
           chmod +x $WEB_DIR/$JAR_NAME
 
           echo "Restarting service..."
