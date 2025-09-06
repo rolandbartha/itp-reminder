@@ -23,23 +23,27 @@ jobs:
         run: chmod +x ./web/gradlew
 
       - name: Build jar
-        run: ./web/gradlew -p web build
+        run: ./web/gradlew -p web bootJar
 
-      - name: Run tests (safety check)
+      - name: Run tests
         run: ./web/gradlew -p web test
-        
+
       - name: List build output
         run: ls -lh web/build/libs
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Upload JAR to VPS
         run: |
-          scp -i ${{ secrets.VPS_SSH_KEY }} web/build/libs/itpreminder.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/deploy/
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          scp -i ~/.ssh/id_rsa web/build/libs/itpreminder.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/deploy/
 
       - name: Deploy & restart service
         run: |
-          ssh -i ${{ secrets.VPS_SSH_KEY }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
           JAR_NAME=itpreminder.jar
           DEPLOY_DIR=/home/${USER}/deploy
