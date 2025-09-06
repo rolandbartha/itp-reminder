@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission to Gradle wrapper
-        run: chmod +x web/gradlew
+        run: chmod +x ./web/gradlew
 
       - name: Build jar
         run: ./web/gradlew -p web build
@@ -30,6 +30,18 @@ jobs:
         
       - name: List build output
         run: ls -lh web/build/libs
+        
+      - name: Debug file tree
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing root of repo:"
+          ls -lh
+          echo "Listing web folder:"
+          ls -lh web
+          echo "Listing build folder:"
+          ls -lh web/build
+          echo "Listing libs folder:"
+          ls -lh web/build/libs
 
       - name: Upload JAR to VPS
         uses: appleboy/scp-action@v1
@@ -37,7 +49,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "${{ github.workspace }}/web/build/libs/itpreminder.jar"
+          source: "web/build/libs/itpreminder.jar"
           target: "/home/${{ secrets.VPS_USER }}/deploy/"
           overwrite: true
 
