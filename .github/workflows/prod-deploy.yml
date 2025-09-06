@@ -1,4 +1,4 @@
-name: Manual Production CD
+name: Production CD
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     branches: [master]
 
 jobs:
-  ci:
+  deploy:
     runs-on: ubuntu-latest
     
     defaults:
