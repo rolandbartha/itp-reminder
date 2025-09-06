@@ -53,6 +53,6 @@ jobs:
           chmod +x $WEB_DIR/$JAR_NAME
 
           echo "Restarting service..."
-          systemctl restart itpreminder.service
+          sudo systemctl restart itpreminder.service
           echo "Deployment finished!"
           EOF
