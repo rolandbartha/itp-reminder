@@ -1,7 +1,7 @@
 
 # 📦 ITP Reminder (PTI Reminder)
 
-A full-featured Spring Boot web application to manage expiring periodic technical inspections of vehicles, send SMS reminders, and provide secure, admin-level control over users and data — designed as a **portfolio project** to showcase real-world Java backend development skills - currently in production to help a company digitalize PTIs.
+A full-featured Spring Boot web application to manage expiring periodic technical inspections of vehicles, send SMS reminders, and provide secure, admin-level control over users and data — designed as a **portfolio project** to showcase real-world Java backend development skills using a **CI/CD Pipeline** - currently in production to help a company digitalize.
 
 ---
 
