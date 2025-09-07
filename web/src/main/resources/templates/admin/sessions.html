@@ -34,7 +34,7 @@
                 <td th:text="${user.currentRoute}"></td>
                 <td>
                     <form th:action="@{/admin/sessions/invalidate/{id}(id=${user.sessionId})}"
-                          method="post" style="display:inline;">
+                          th:method="post" style="display:inline;">
                         <button type="submit" class="btn btn-sm btn-danger">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </button>

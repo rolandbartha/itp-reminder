@@ -32,7 +32,7 @@
 
                 <div class="d-flex align-items-center gap-2">
                     <span class="fw-semibold">Welcome, <a th:href="@{/profile}" th:text="${#authentication.name}" class="fw-bold text-decoration-none">User</a></span>
-                    <form th:action="@{/logout}" method="post" class="m-0">
+                    <form th:action="@{/logout}" th:method="post" class="m-0">
                         <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
                     </form>
                 </div>

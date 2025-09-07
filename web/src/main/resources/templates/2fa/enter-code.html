@@ -15,7 +15,7 @@
 
 <main class="container" style="max-width: 400px;">
     <h2 class="mb-4">Two-Factor Authentication</h2>
-    <form th:action="@{/2fa/enter-code}" method="post" novalidate>
+    <form th:action="@{/2fa/enter-code}" th:method="post" novalidate>
         <div class="mb-3">
             <label for="code" class="form-label">Authentication Code</label>
             <input

@@ -22,7 +22,7 @@
             <p class="text-muted">Fill out the form below to add a data entry.</p>
         </div>
 
-        <form th:action="@{/entries/add}" th:object="${entry}" method="post">
+        <form th:action="@{/entries/add}" th:object="${entry}" th:method="post">
             <div class="mb-3">
                 <label for="phone" class="form-label">Phone Number</label>
                 <input type="tel" th:field="*{phone}" id="phone" class="form-control"

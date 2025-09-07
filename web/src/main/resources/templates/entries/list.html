@@ -30,7 +30,7 @@
                 <!-- Right: Buttons -->
                 <div class="d-flex flex-column align-items-end gap-2">
                     <!-- Import button -->
-                    <form th:action="@{/entries/import}" method="post" enctype="multipart/form-data"
+                    <form th:action="@{/entries/import}" th:method="post" enctype="multipart/form-data"
                         class="form-control form-control-sm flex-fill">
                         <input type="file" name="file" accept=".xlsx" class="form-control" required>
                         <button type="submit" class="btn btn-success w-100">Import</button>
@@ -38,17 +38,17 @@
 
                     <!-- Export button group -->
                     <div class="d-flex gap-1 w-100">
-                        <form id="export" th:action="@{/entries/export}" method="post" class="flex-fill">
+                        <form id="export" th:action="@{/entries/export}" th:method="post" class="flex-fill">
                             <button type="submit" class="btn btn-primary w-100">Export Selected</button>
                         </form>
-                        <form th:action="@{/entries/export-all}" method="post" class="flex-fill">
+                        <form th:action="@{/entries/export-all}" th:method="post" class="flex-fill">
                             <button type="submit" class="btn btn-primary w-100">Export All</button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <form th:action="@{/entries/search}" method="get" id="searchForm" class="mb-4">
+            <form th:action="@{/entries/search}" th:method="get" id="searchForm" class="mb-4">
                 <input type="hidden" name="page" value="0" />
                 <!-- Search Filters -->
                 <div class="row g-3">
@@ -77,8 +77,7 @@
                         </select>
                     </div>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <select class="form-select" name="size"
-                            onchange="document.getElementById('searchForm').submit();">
+                        <select class="form-select" name="size">
                             <option th:value="10" th:selected="${search.size == 10}">10</option>
                             <option th:value="25" th:selected="${search.size == 25}">25</option>
                             <option th:value="50" th:selected="${search.size == 50}">50</option>
@@ -321,6 +320,11 @@
 
 </body>
 <script>
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        const csrfInput = this.querySelector('input[name="_csrf"]');
+        if(csrfInput) csrfInput.remove();
+    });
+
     function setSort(column) {
         const sortByInput = document.getElementById('sortByInput');
         const directionInput = document.getElementById('directionInput');

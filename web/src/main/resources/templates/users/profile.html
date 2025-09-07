@@ -39,7 +39,7 @@
                         <div th:if="${is2FA}">
                             <p>2FA is currently <span class="badge bg-success">Enabled</span>.</p>
                             <p>Disabling it will require scanning a new QR code if you re-enable it later.</p>
-                            <form th:action="@{/2fa/disable}" method="post" class="row g-3"
+                            <form th:action="@{/2fa/disable}" th:method="post" class="row g-3"
                                   onsubmit="return confirm('Disable 2FA?');">
                                 <label for="code" class="form-label">Enter the 6-digit code</label>
                                 <div class="col-md-4">
@@ -61,7 +61,7 @@
                                 <img th:src="${qrCodeBase64}" alt="QR Code"/>
                             </div>
 
-                            <form th:action="@{/2fa/enable}" method="post" class="row g-3">
+                            <form th:action="@{/2fa/enable}" th:method="post" class="row g-3">
 
                                 <label for="code" class="form-label">Enter the 6-digit code</label>
 
@@ -117,7 +117,7 @@
                                     <td th:text="${#temporals.format(device.createdAt, 'MMMM d, yyyy HH:mm')}"></td>
                                     <td th:text="${#temporals.format(device.expiresAt, 'MMMM d, yyyy HH:mm')}"></td>
                                     <td>
-                                        <form th:action="@{'/profile/remove-device/' + ${device.id}}" method="post">
+                                        <form th:action="@{'/profile/remove-device/' + ${device.id}}" th:method="post">
                                             <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                         </form>
                                     </td>
