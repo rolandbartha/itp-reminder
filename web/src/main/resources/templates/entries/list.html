@@ -242,7 +242,7 @@
                         <!-- Bounding buttons -->
                         <li class="page-item" th:if="${page.number > 1 + 1}">
                             <a class="page-link" th:href="@{/entries/search(
-                    page=${0},
+                    page=${1},
                     size=${search.size},
                     phone=${search.phone},
                     tag=${search.tag},
@@ -274,7 +274,7 @@
 
                         <li class="page-item" th:if="${page.number < page.totalPages - 1 - 2}">
                             <a class="page-link" th:href="@{/entries/search(
-                    page=${page.totalPages - 1},
+                    page=${page.totalPages},
                     size=${search.size},
                     phone=${search.phone},
                     tag=${search.tag},
