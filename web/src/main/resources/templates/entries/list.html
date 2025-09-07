@@ -1,106 +1,109 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Data Entries</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}"/>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
+
 <body>
 
-<div th:replace="~{fragments :: header}"></div>
+    <div th:replace="~{fragments :: header}"></div>
 
-<main>
-    <div class="container">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-3">
-            <!-- Left: Text -->
-            <div class="mb-2 mb-md-0">
-                <h2 class="h4">Data Entries</h2>
-                <p class="text-muted">Manage all entries.</p>
-                <a th:href="@{/entries/add}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg"></i> Add New Entry
-                </a>
-            </div>
+    <main>
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-3">
+                <!-- Left: Text -->
+                <div class="mb-2 mb-md-0">
+                    <h2 class="h4">Data Entries</h2>
+                    <p class="text-muted">Manage all entries.</p>
+                    <a th:href="@{/entries/add}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add New Entry
+                    </a>
+                </div>
 
-            <!-- Right: Buttons -->
-            <div class="d-flex flex-column align-items-end gap-2">
-                <!-- Import button -->
-                <form th:action="@{/entries/import}" method="post" enctype="multipart/form-data"
-                      class="form-control form-control-sm flex-fill">
-                    <input type="file" name="file" accept=".xlsx" class="form-control" required>
-                    <button type="submit" class="btn btn-success w-100">Import</button>
-                </form>
-
-                <!-- Export button group -->
-                <div class="d-flex gap-1 w-100">
-                    <form id="export" th:action="@{/entries/export}" method="post" class="flex-fill">
-                        <button type="submit" class="btn btn-primary w-100">Export Selected</button>
+                <!-- Right: Buttons -->
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <!-- Import button -->
+                    <form th:action="@{/entries/import}" method="post" enctype="multipart/form-data"
+                        class="form-control form-control-sm flex-fill">
+                        <input type="file" name="file" accept=".xlsx" class="form-control" required>
+                        <button type="submit" class="btn btn-success w-100">Import</button>
                     </form>
-                    <form th:action="@{/entries/export-all}" method="post" class="flex-fill">
-                        <button type="submit" class="btn btn-primary w-100">Export All</button>
-                    </form>
-                </div>
-            </div>
-        </div>
 
-        <form th:action="@{/entries/search}" method="get" id="searchForm" class="mb-4">
-            <input type="hidden" name="page" value="0"/>
-            <!-- Search Filters -->
-            <div class="row g-3">
-                <h3 class="h5">Filters</h3>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <input class="form-control" type="text" name="phone" placeholder="+40712345678"
-                           th:value="${search.phone}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <input class="form-control" type="text" name="tag" placeholder="BH01ABC"
-                           th:value="${search.tag}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <input class="form-control" type="date" name="fromDate" placeholder="From Date"
-                           th:value="${search.fromDate}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <input class="form-control" type="date" name="toDate" placeholder="To Date"
-                           th:value="${search.toDate}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <select class="form-select" name="reminded">
-                        <option th:value="null" th:selected="${search.reminded == null}">All</option>
-                        <option th:value="true" th:selected="${search.reminded == true}">Reminded</option>
-                        <option th:value="false" th:selected="${search.reminded == false}">Not Reminded</option>
-                    </select>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <select class="form-select" name="size" onchange="document.getElementById('searchForm').submit();">
-                        <option th:value="10" th:selected="${search.size == 10}">10</option>
-                        <option th:value="25" th:selected="${search.size == 25}">25</option>
-                        <option th:value="50" th:selected="${search.size == 50}">50</option>
-                        <option th:value="100" th:selected="${search.size == 100}">100</option>
-                    </select>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <button class="btn btn-primary w-100" type="submit">Search</button>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a class="btn btn-secondary w-100" th:href="@{/entries}">Reset</a>
+                    <!-- Export button group -->
+                    <div class="d-flex gap-1 w-100">
+                        <form id="export" th:action="@{/entries/export}" method="post" class="flex-fill">
+                            <button type="submit" class="btn btn-primary w-100">Export Selected</button>
+                        </form>
+                        <form th:action="@{/entries/export-all}" method="post" class="flex-fill">
+                            <button type="submit" class="btn btn-primary w-100">Export All</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <!-- Hidden inputs for pagination & sorting -->
-            <input type="hidden" name="page" id="pageInput" th:value="${search.page}"/>
-            <input type="hidden" name="sortBy" id="sortByInput" th:value="${search.sortBy}"/>
-            <input type="hidden" name="direction" id="directionInput" th:value="${search.direction}"/>
+            <form th:action="@{/entries/search}" method="get" id="searchForm" class="mb-4">
+                <input type="hidden" name="page" value="0" />
+                <!-- Search Filters -->
+                <div class="row g-3">
+                    <h3 class="h5">Filters</h3>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <input class="form-control" type="text" name="phone" placeholder="+40712345678"
+                            th:value="${search.phone}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <input class="form-control" type="text" name="tag" placeholder="BH01ABC"
+                            th:value="${search.tag}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <input class="form-control" type="date" name="fromDate" placeholder="From Date"
+                            th:value="${search.fromDate}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <input class="form-control" type="date" name="toDate" placeholder="To Date"
+                            th:value="${search.toDate}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <select class="form-select" name="reminded">
+                            <option th:value="null" th:selected="${search.reminded == null}">All</option>
+                            <option th:value="true" th:selected="${search.reminded == true}">Reminded</option>
+                            <option th:value="false" th:selected="${search.reminded == false}">Not Reminded</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <select class="form-select" name="size"
+                            onchange="document.getElementById('searchForm').submit();">
+                            <option th:value="10" th:selected="${search.size == 10}">10</option>
+                            <option th:value="25" th:selected="${search.size == 25}">25</option>
+                            <option th:value="50" th:selected="${search.size == 50}">50</option>
+                            <option th:value="100" th:selected="${search.size == 100}">100</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <button class="btn btn-primary w-100" type="submit">Search</button>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <a class="btn btn-secondary w-100" th:href="@{/entries}">Reset</a>
+                    </div>
+                </div>
 
-            <!-- Table -->
-            <table id="entry-table" class="table table-striped table-hover table-bordered align-middle mt-4">
-                <thead class="table-dark">
-                <tr>
-                    <th scope="col">
-                        <a th:href="@{/entries/search(
+                <!-- Hidden inputs for pagination & sorting -->
+                <input type="hidden" name="page" id="pageInput" th:value="${search.page}" />
+                <input type="hidden" name="sortBy" id="sortByInput" th:value="${search.sortBy}" />
+                <input type="hidden" name="direction" id="directionInput" th:value="${search.direction}" />
+
+                <!-- Table -->
+                <table id="entry-table" class="table table-striped table-hover table-bordered align-middle mt-4">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">
+                                <a th:href="@{/entries/search(
                         size=${search.size},
                         phone=${search.phone},
                         tag=${search.tag},
@@ -110,19 +113,17 @@
                         sortBy='id',
                         direction=${search.sortBy == 'id' && search.direction == 'asc' ? 'desc' : 'asc'},
                         page=0
-                    )}"
-                           class="text-white text-decoration-none d-flex align-items-center gap-1">
-                            Id
-                            <i th:if="${search.sortBy == 'id'}"
-                               class="bi"
-                               th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-                        </a>
-                    </th>
+                    )}" class="text-white text-decoration-none d-flex align-items-center gap-1">
+                                    Id
+                                    <i th:if="${search.sortBy == 'id'}" class="bi"
+                                        th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                                </a>
+                            </th>
 
-                    <th scope="col">Phone</th>
+                            <th scope="col">Phone</th>
 
-                    <th scope="col">
-                        <a th:href="@{/entries/search(
+                            <th scope="col">
+                                <a th:href="@{/entries/search(
                         size=${search.size},
                         phone=${search.phone},
                         tag=${search.tag},
@@ -132,17 +133,15 @@
                         sortBy='tag',
                         direction=${search.sortBy == 'tag' && search.direction == 'asc' ? 'desc' : 'asc'},
                         page=0
-                    )}"
-                           class="text-white text-decoration-none d-flex align-items-center gap-1">
-                            Tag
-                            <i th:if="${search.sortBy == 'tag'}"
-                               class="bi"
-                               th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-                        </a>
-                    </th>
+                    )}" class="text-white text-decoration-none d-flex align-items-center gap-1">
+                                    Tag
+                                    <i th:if="${search.sortBy == 'tag'}" class="bi"
+                                        th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                                </a>
+                            </th>
 
-                    <th scope="col">
-                        <a th:href="@{/entries/search(
+                            <th scope="col">
+                                <a th:href="@{/entries/search(
                         size=${search.size},
                         phone=${search.phone},
                         tag=${search.tag},
@@ -152,20 +151,18 @@
                         sortBy='date',
                         direction=${search.sortBy == 'date' && search.direction == 'asc' ? 'desc' : 'asc'},
                         page=0
-                    )}"
-                           class="text-white text-decoration-none d-flex align-items-center gap-1">
-                            Date
-                            <i th:if="${search.sortBy == 'date'}"
-                               class="bi"
-                               th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-                        </a>
-                    </th>
+                    )}" class="text-white text-decoration-none d-flex align-items-center gap-1">
+                                    Date
+                                    <i th:if="${search.sortBy == 'date'}" class="bi"
+                                        th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                                </a>
+                            </th>
 
-                    <th scope="col">Expiry</th>
-                    <th scope="col">Added by</th>
+                            <th scope="col">Expiry</th>
+                            <th scope="col">Added by</th>
 
-                    <th scope="col">
-                        <a th:href="@{/entries/search(
+                            <th scope="col">
+                                <a th:href="@{/entries/search(
                         size=${search.size},
                         phone=${search.phone},
                         tag=${search.tag},
@@ -175,62 +172,61 @@
                         sortBy='reminded',
                         direction=${search.sortBy == 'reminded' && search.direction == 'asc' ? 'desc' : 'asc'},
                         page=0
-                    )}"
-                           class="text-white text-decoration-none d-flex align-items-center gap-1">
-                            Reminded
-                            <i th:if="${search.sortBy == 'reminded'}"
-                               class="bi"
-                               th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-                        </a>
-                    </th>
-                    <th scope="col">Status</th>
+                    )}" class="text-white text-decoration-none d-flex align-items-center gap-1">
+                                    Reminded
+                                    <i th:if="${search.sortBy == 'reminded'}" class="bi"
+                                        th:classappend="${search.direction == 'asc'} ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                                </a>
+                            </th>
+                            <th scope="col">Status</th>
 
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="entry : ${page?.content}">
-                    <th scope="row">
-                        <input form="export" type="checkbox" name="ids" th:value="${entry.id}" class="form-check-input">
-                        <span th:text="${entry.id}"></span>
-                    </th>
-                    <td th:text="${entry.phone}"></td>
-                    <td th:text="${entry.tag}"></td>
-                    <td><span th:text="${#temporals.format(entry.date, 'MMMM d, yyyy')}"></span></td>
-                    <td><span th:text="${#temporals.format(entry.expiry, 'MMMM d, yyyy')}"></span></td>
-                    <td th:text="${entry.creator}"></td>
-                    <td>
-                        <span th:if="${entry.reminded}" class="badge bg-success">Yes</span>
-                        <span th:unless="${entry.reminded}" class="badge bg-danger">No</span>
-                    </td>
-                    <td>
-                        <span th:if="${entry.expired}" class="badge bg-danger">Expired</span>
-                        <span th:if="${entry.soon}" class="badge bg-warning">Expiring</span>
-                        <span th:if="${!entry.expired && !entry.soon}" class="badge bg-success">Valid</span>
-                    </td>
-                    <td>
-                        <a th:href="@{'/entries/edit/' + ${entry.id}}" class="btn btn-sm btn-warning me-2">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        <form th:action="@{'/entries/delete/' + ${entry.id}}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure you want to delete this entry?');">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${page?.content}">
+                            <th scope="row">
+                                <input form="export" type="checkbox" name="ids" th:value="${entry.id}"
+                                    class="form-check-input">
+                                <span th:text="${entry.id}"></span>
+                            </th>
+                            <td th:text="${entry.phone}"></td>
+                            <td th:text="${entry.tag}"></td>
+                            <td><span th:text="${#temporals.format(entry.date, 'MMMM d, yyyy')}"></span></td>
+                            <td><span th:text="${#temporals.format(entry.expiry, 'MMMM d, yyyy')}"></span></td>
+                            <td th:text="${entry.creator}"></td>
+                            <td>
+                                <span th:if="${entry.reminded}" class="badge bg-success">Yes</span>
+                                <span th:unless="${entry.reminded}" class="badge bg-danger">No</span>
+                            </td>
+                            <td>
+                                <span th:if="${entry.expired}" class="badge bg-danger">Expired</span>
+                                <span th:if="${entry.soon}" class="badge bg-warning">Expiring</span>
+                                <span th:if="${!entry.expired && !entry.soon}" class="badge bg-success">Valid</span>
+                            </td>
+                            <td>
+                                <a th:href="@{'/entries/edit/' + ${entry.id}}" class="btn btn-sm btn-warning me-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <form th:action="@{'/entries/delete/' + ${entry.id}}" method="post"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this entry?');">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <!-- Pagination -->
-            <nav th:if="${page != null}" aria-label="Page navigation">
-                <ul class="pagination pagination-lg justify-content-center flex-wrap gap-2">
+                <!-- Pagination -->
+                <nav th:if="${page != null}" aria-label="Page navigation">
+                    <ul class="pagination pagination-lg justify-content-center flex-wrap gap-2">
 
-                    <!-- Previous button -->
-                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/entries/search(
+                        <!-- Previous button -->
+                        <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/entries/search(
                     page=${page.number},
                     size=${search.size},
                     phone=${search.phone},
@@ -240,17 +236,30 @@
                     reminded=${search.reminded},
                     sortBy=${search.sortBy},
                     direction=${search.direction}
-                )}"
-                           aria-label="Previous">‹</a>
-                    </li>
+                    )}" aria-label="Previous">‹</a>
+                        </li>
 
-                    <!-- Page numbers (show max 5 pages around current) -->
-                    <li th:each="i : ${#numbers.sequence(
+                        <!-- Bounding buttons -->
+                        <li class="page-item" th:if="${page.number > 1 + 1}">
+                            <a class="page-link" th:href="@{/entries/search(
+                    page=${0},
+                    size=${search.size},
+                    phone=${search.phone},
+                    tag=${search.tag},
+                    fromDate=${search.fromDate},
+                    toDate=${search.toDate},
+                    reminded=${search.reminded},
+                    sortBy=${search.sortBy},
+                    direction=${search.direction}
+                    )}" aria-label="First">1</a>
+                        </li>
+
+                        <!-- Page numbers (show max 5 pages around current) -->
+                        <li th:each="i : ${#numbers.sequence(
                 page.number + 1 - 2 > 1 ? page.number + 1 - 2 : 1,
-                page.number + 1 + 2 < page.totalPages ? page.number + 1 + 2 : page.totalPages)}"
-                        class="page-item" th:classappend="${i == page.number + 1} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/entries/search(
+                page.number + 1 + 2 < page.totalPages ? page.number + 1 + 2 : page.totalPages)}" class="page-item"
+                            th:classappend="${i == page.number + 1} ? 'active'">
+                            <a class="page-link" th:href="@{/entries/search(
                     page=${i},
                     size=${search.size},
                     phone=${search.phone},
@@ -260,14 +269,26 @@
                     reminded=${search.reminded},
                     sortBy=${search.sortBy},
                     direction=${search.direction}
-                )}"
-                           th:text="${i}">1</a>
-                    </li>
+                )}" th:text="${i}">1</a>
+                        </li>
 
-                    <!-- Next button -->
-                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/entries/search(
+                        <li class="page-item" th:if="${page.number < page.totalPages - 1 - 2}">
+                            <a class="page-link" th:href="@{/entries/search(
+                    page=${page.totalPages - 1},
+                    size=${search.size},
+                    phone=${search.phone},
+                    tag=${search.tag},
+                    fromDate=${search.fromDate},
+                    toDate=${search.toDate},
+                    reminded=${search.reminded},
+                    sortBy=${search.sortBy},
+                    direction=${search.direction}
+                    )}" aria-label="Last"><span th:text="${page.totalPages}"></span></a>
+                        </li>
+
+                        <!-- Next button -->
+                        <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/entries/search(
                     page=${page.number + 2},
                     size=${search.size},
                     phone=${search.phone},
@@ -277,27 +298,26 @@
                     reminded=${search.reminded},
                     sortBy=${search.sortBy},
                     direction=${search.direction}
-                )}"
-                           aria-label="Next">›</a>
-                    </li>
+                )}" aria-label="Next">›</a>
+                        </li>
 
-                </ul>
-            </nav>
+                    </ul>
+                </nav>
 
-            <!-- Page info -->
-            <div th:if="${page != null}" class="text-center mt-3">
-                <small class="text-muted">
-                    Page <strong th:text="${page.number + 1}">1</strong>
-                    of <strong th:text="${page.totalPages}">1</strong>,
-                    Total entries: <strong th:text="${page.totalElements}">0</strong>
-                </small>
-            </div>
+                <!-- Page info -->
+                <div th:if="${page != null}" class="text-center mt-3">
+                    <small class="text-muted">
+                        Page <strong th:text="${page.number + 1}">1</strong>
+                        of <strong th:text="${page.totalPages}">1</strong>,
+                        Total entries: <strong th:text="${page.totalElements}">0</strong>
+                    </small>
+                </div>
 
-        </form>
-    </div>
-</main>
+            </form>
+        </div>
+    </main>
 
-<div th:replace="~{fragments :: footer}"></div>
+    <div th:replace="~{fragments :: footer}"></div>
 
 </body>
 <script>
@@ -322,4 +342,5 @@
         document.getElementById('searchForm').submit();
     }
 </script>
+
 </html>

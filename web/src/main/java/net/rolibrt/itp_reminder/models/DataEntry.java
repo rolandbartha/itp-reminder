@@ -54,7 +54,6 @@ public class DataEntry {
     }
 
     public boolean importCSV(DataEntryCSV csv) {
-        id = csv.getId();
         phone = csv.getPhone();
         tag = csv.getTag();
         date = csv.getDate();

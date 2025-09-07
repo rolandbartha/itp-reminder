@@ -20,12 +20,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -192,16 +188,30 @@ public class EntriesController {
                 .doReadSync();
         Map<Long, DataEntryCSV> map = entries.stream().collect(Collectors.toMap(DataEntryCSV::getId, e -> e));
 
-        List<DataEntry> entriesToUpdate = dataEntryService
-                .findAllById(entries.stream().map(DataEntryCSV::getId)
-                .toList());
-        for (DataEntry entry : entriesToUpdate) {
-            DataEntryCSV mapEntry = map.get(entry.getId());
-            if (entry.importCSV(mapEntry)) {
-                webUserService.findByUsername(mapEntry.getCreator()).ifPresent(entry::setCreatedBy);
+        Map<Long, DataEntry> entriesPresent = dataEntryService
+                .findAllById(map.keySet().stream()
+                        .toList()).stream().collect(Collectors.toMap(DataEntry::getId, e -> e));
+        List<DataEntry> entriesUpdate = new ArrayList<>(map.size());
+        for (Map.Entry<Long, DataEntryCSV> csvEntry : map.entrySet()) {
+            DataEntry entry;
+            if (entriesPresent.containsKey(csvEntry.getKey())) {
+                entry = entriesPresent.get(csvEntry.getKey());
+                boolean creatorUpdate = entry.getCreatedBy() != null &&
+                        !entry.getCreatedBy().getUsername().equals(csvEntry.getValue().getCreator());
+                if (entry.importCSV(csvEntry.getValue())) {
+                    if (creatorUpdate) {
+                        webUserService.findByUsername(csvEntry.getValue().getCreator()).ifPresent(entry::setCreatedBy);
+                    }
+                }
+            } else {
+                entry = new DataEntry();
+                if (entry.importCSV(csvEntry.getValue())) {
+                    webUserService.findByUsername(csvEntry.getValue().getCreator()).ifPresent(entry::setCreatedBy);
+                }
             }
+            entriesUpdate.add(entry);
         }
-        dataEntryService.saveAll(entriesToUpdate);
+        dataEntryService.saveAll(entriesUpdate);
         return "redirect:/entries";
     }
 }
