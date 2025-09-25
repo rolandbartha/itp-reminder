@@ -25,6 +25,7 @@ A full-featured Spring Boot web application to manage expiring periodic technica
   - Add, update, delete entries with phone, tag, and due date
   - *Filter* and *search* with *pagination*, *sorting*, and date range
   - Import & export data in XLSX format
+  - REST API for Mobile App (with configurable header & API key)
 - 🛠 **Admin Dashboard**
   - View and manage *users* & *settings*
   - *Role-based* access control
