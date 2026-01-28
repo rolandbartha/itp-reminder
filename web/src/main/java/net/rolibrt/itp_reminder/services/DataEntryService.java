@@ -48,10 +48,7 @@ public class DataEntryService {
 
     public List<DataEntryListDto> getDueEntries() {
         int reminderDays = getReminderDays() + 1;
-        LocalDate today = LocalDate.now();
-        LocalDate targetDate = today.minusYears(1)
-                .plusDays(reminderDays); // today == (createdAt + 1y - 10d)
-        return dataEntryRepository.findDue(targetDate).stream()
+        return dataEntryRepository.findDue(reminderDays).stream()
                 .map(entry -> new DataEntryListDto(entry, reminderDays))
                 .collect(Collectors.toList());
     }

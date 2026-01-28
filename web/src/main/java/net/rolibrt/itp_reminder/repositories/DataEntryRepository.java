@@ -22,8 +22,10 @@ public interface DataEntryRepository extends JpaRepository<DataEntry, Long>, Jpa
 
     Optional<DataEntry> findByTag(String tag);
 
-    @Query("SELECT e FROM DataEntry e WHERE e.reminded = false AND e.date <= :targetDate")
-    List<DataEntry> findDue(@Param("targetDate") LocalDate targetDate);
+    @Query(value = "SELECT * FROM data_entry WHERE reminded = false AND " +
+            "DATE_SUB(DATE_ADD(date, INTERVAL duration MONTH), INTERVAL :reminderDays DAY) <= CURDATE()",
+            nativeQuery = true)
+    List<DataEntry> findDue(@Param("reminderDays") int reminderDays);
 
     @Modifying
     @Query("UPDATE DataEntry d SET d.reminded = :newValue WHERE d.id IN :ids")
