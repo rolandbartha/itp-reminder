@@ -73,8 +73,6 @@ public class EntriesController {
         }
         if (entry.getTag() == null || entry.getTag().isBlank()) {
             result.rejectValue("tag", "error.entry.tag1", "A tag is required!");
-        } else if (dataEntryService.findByTag(entry.getTag()).isPresent()) {
-            result.rejectValue("tag", "error.entry.tag2", "Tag already registered!");
         }
         if (entry.getDate() == null) {
             result.rejectValue("date", "error.entry.date", "A date is required!");
@@ -86,9 +84,12 @@ public class EntriesController {
             return "entries/add";
         }
         WebUser user = webUserService.findByUsername(principal.getName()).orElseThrow();
-        DataEntry dataEntry = new DataEntry();
+        DataEntry dataEntry = dataEntryService.findByTag(entry.getTag()).orElse(null);
+        if (dataEntry == null) {
+            dataEntry = new DataEntry();
+            dataEntry.setTag(entry.getTag());
+        }
         dataEntry.setPhone(entry.getPhone());
-        dataEntry.setTag(entry.getTag());
         dataEntry.setDate(entry.getDate());
         dataEntry.setDuration(Math.min(24, Math.max(entry.getDuration(), 1)));
         dataEntry.setCreatedBy(user);
